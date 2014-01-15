@@ -1,0 +1,64 @@
+public class GraphCalc {
+    public static String simplifyCo(String equation) { 
+	for (int i = 0; i < equation.length(); i++) {
+	    if (equation.substring(i,i+1).equals( "x")) {
+		String firstpart = equation.substring(0,i);
+		equation = firstpart + "*" + equation.substring(i,equation.length());
+		break;
+	    }
+	}
+	return equation;
+    }
+    // Finds last instance of open parens and first instance of closer parens
+    public static String innerParens(String equation) {
+	int openParens = 0;
+	int closedParens = 0;
+	for (int i = 0; i < equation.length(); i++) {
+	    if (equation.substring(i,i+1).equals( "(")) {
+		openParens = i;
+	    }
+	    if (equation.substring (i,i+1).equals( ")")) {
+		closedParens = i;
+		break;
+	    }
+	}
+	if (closedParens == 0) {
+	    return equation;
+	}
+	else { return equation.substring(openParens + 1, closedParens);}
+    }
+    public static int linSearch (String equation, String a) {
+	for (int i = 0; i < equation.length(); i++) {
+	    if (a.equals(equation.substring(i,i+1))) {
+		return i;
+	    }
+	}
+	return -1;
+    }
+
+    public static String simplifyStep(String equation) {
+	for (int i = 0; i < equation.length(); i++) {
+	    if (equation.substring(i,i+1).equals("+")) {
+		equation = (double) equation.substring(i-1,i) + (double) equation.substring (i+1,i+2);
+	    }
+	}
+	return equation;
+    }
+
+    //  public static double simplify(String equation) {
+    //	while (linSearch(equation, "(") != -1) {
+    //	    equation = 
+    //	}
+    // }
+		
+    public static void main( String[] args) {
+	String tester = "(5(x+4))";
+	int x = 5;
+	System.out.println((5*x + 4));
+	System.out.println(tester);
+	System.out.println(simplifyCo(tester));
+	System.out.println(innerParens(tester));
+	String test = "5+4";
+	System.out.println(simplifyStep(test));
+    }
+}
