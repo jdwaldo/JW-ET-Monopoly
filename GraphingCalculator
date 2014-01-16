@@ -1,21 +1,120 @@
-public class GraphingCalculator {
+//class GUITester (working title)
+//creates and runs a GUI in which the user types in an equation, and a graph, as well as information on the equation, is returned
 
-  private static final String[] VALID = {“0”, “1”, “2”, “3”, “4”, “5”, “6”, “7”, “8”, “9”, “+”, “-”, “*”, “/”, “^”, ;
-                                        “(”, “)”, “x”, “e”, “pi”, “sin”, “cos”, “tan”, “cot”, “csc”, “sec”, “log”};
-  
-  //method to determine if the input is valid
-  public boolean isValid(String input) {
-	  for(String s : input) {
-		  if ( linSearch(VALID, s) == -1 ) {
-			  System.out.println(“Your input includes invalid characters. Please try retyping your input using valid ones.”);
-		    return false;
-		  }
-	  }
-	  return true;
-  }
+import javax.swing.*;
+import java.awt.*;
+//actionEvent and actionListener are in the below package
+import java.awt.event.*;
 
-  //linSearch to help the isValid method determine if all characters in the input string are valid  
-  public static int linSearch ( String[] a, String target ) {
+public class GUITester implements ActionListener {
+
+    JButton XinterceptButton;
+    JButton YinterceptButton;
+    JButton AsymptotesButton;
+    JTextField inputFunctionField;
+    String inputEquation;
+    private static final String[] VALID = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", "^", "(", ")", "x", "e", "pi", "sin", "cos", "tan", "cot", "csc", "sec", "log"};
+
+
+    //helper class that allows you to manipulate the graph panel
+    class MyGraphPanel extends JPanel {
+
+	public void paintComponent(Graphics g) {
+	    //setcolor must go before fillRect. setColor sets the default color,
+	    //fillRect fills the component with the default color
+	    g.setColor(Color.white);
+	    g.fillRect(0, 0, this.getWidth(), this.getHeight());
+	}
+
+    }
+
+    //helper class that allows you to manipulate the button panel
+    class MyButtonPanel extends JPanel {
+
+	public void paintComponent(Graphics g) {
+	    g.setColor(Color.black);
+	    g.fillRect(0, 0, this.getWidth(), this.getHeight());
+	}
+
+    }
+
+
+    public void go() {
+	
+	//instantiate a Frame, some Panels, and some Buttons
+	JFrame frame = new JFrame();
+	JPanel panel = new MyButtonPanel();
+	JPanel graphpanel = new MyGraphPanel();
+	JPanel inputPanel = new JPanel();
+	JLabel inputFunctionLabel = new JLabel("y=");
+	inputFunctionField = new JTextField(25);
+	XinterceptButton = new JButton("Calculate x-intercept");
+	YinterceptButton = new JButton("Calculate y-intercept");
+	AsymptotesButton = new JButton("Calculate Asymptotes");
+
+	//lend each button your ear
+	XinterceptButton.addActionListener(this);
+	YinterceptButton.addActionListener(this);
+	AsymptotesButton.addActionListener(this);
+	inputFunctionField.addActionListener(this);
+
+	//set button parameters
+	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+	//add buttons to the panel
+	panel.add(XinterceptButton);
+	panel.add(YinterceptButton);
+	panel.add(AsymptotesButton);
+
+	inputPanel.add(inputFunctionLabel);
+	inputPanel.add(inputFunctionField);
+
+	//add panels to frame, set frame parameters
+	frame.getContentPane().add(BorderLayout.EAST, panel);
+	frame.getContentPane().add(BorderLayout.SOUTH, inputPanel);
+	frame.getContentPane().add(BorderLayout.CENTER, graphpanel);
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frame.setSize(1000, 1000);
+	frame.setVisible(true);
+
+    }
+
+    //event handler
+    public void actionPerformed(ActionEvent Event) {
+	if ( isValid(inputFunctionField.getText()) && !(inputFunctionField.getText().equals(""))) {
+	    if (Event.getSource() == XinterceptButton) {
+	    XinterceptButton.setText("X-intercept calculated");
+	    }
+	    else if (Event.getSource() == YinterceptButton) {
+		YinterceptButton.setText("Y-intercept calculated");
+	    }
+	    else if (Event.getSource() == AsymptotesButton) {
+		AsymptotesButton.setText("Asymptotes calculated");
+	    }
+	    else if (Event.getSource() == inputFunctionField) {
+		//now stores the value the user types into the text field in inputEquation variable
+		inputEquation = inputFunctionField.getText();
+	    }
+	}
+	else {
+	    System.out.println("You have typed invalid characters in, or you have not typed anything at all. Type in an expression in the form y = f(x) so that its special values may be calculated");
+	}
+	//diagnostic
+	//System.out.println(inputEquation);
+    }
+
+    //helper method for actionPerformed(), determines if the input is valid
+    public boolean isValid(String input) {
+	for(int i = 0; i < input.length(); i++) {
+	    if ( linSearch(VALID, input.substring(i, i+1)) == -1 ) {
+		return false;
+	    }
+	}
+	return true;
+    }
+
+    //linSearch to help the isValid method determine if all characters in the input string are valid  
+    public static int linSearch ( String[] a, String target ) {
 
         int tPos = -1;
         int i = 0;
@@ -29,6 +128,14 @@ public class GraphingCalculator {
         }
         return tPos;
     }
+
+    //Main Method
+    public static void main (String[] args) {
+	GUITester testarr = new GUITester();
+	testarr.go();
+    }
+
+}
 
   
 
