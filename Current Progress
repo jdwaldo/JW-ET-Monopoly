@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 public class GraphCalc {
     private ArrayList<String> equation;
@@ -7,6 +6,21 @@ public class GraphCalc {
     public GraphCalc() {
 	equation = new ArrayList<String>();
     }
+    
+        public GraphCalc(String input) {
+	equation = new ArrayList<String>();
+	String numberString = "";
+	for (int i = 0; i < input.length(); i++) {
+	    if (binSearchIter(numbers, input.substring(i,i+1)) != -1) {
+		numberString = numberString + input.substring(i,i+1);
+	    }
+	    else {
+		equation.add(numberString);
+		equation.add(input.substring(i,i+1));
+		numberString = "";
+	    }
+	}
+    
     public ArrayList<String> simplifyCo() { 
 	for (int i = 1; i < equation.size(); i++) {
 	    if (equation.get(i).equals( "x") || equation.get(i).equals("(")) {
@@ -18,6 +32,8 @@ public class GraphCalc {
 	}
 	return equation;
     }
+
+    
     /*
     // Finds last instance of open parens and first instance of closer parens
     public static String innerParens(String equation) {
