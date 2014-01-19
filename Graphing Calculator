@@ -1,0 +1,176 @@
+import java.util.ArrayList;
+public class GraphingCalculator {
+    private ArrayList<String> equation;
+    private String[] numbers = {".","0","1","2","3","4","5","6","7","8","9"}; 
+    private String[] operators = {"+", "-", "*", "/", "^", "sin", "cos", "tan","cot", "csc", "sec", "log"}; 
+    public GraphingCalculator() {
+        equation = new ArrayList<String>();
+    }
+    
+    public GraphingCalculator(String input) {
+        String numberString = "";
+	equation= new ArrayList<String>();
+        for (int i = 0; i < input.length(); i++) {
+            if (BinSearch2.binSearch(numbers, input.substring(i,i+1)) != -1) {
+                numberString = numberString + input.substring(i,i+1);
+            }
+            else if (numberString.length() != 0) {
+                equation.add(numberString);
+                equation.add(input.substring(i,i+1));
+                numberString = "";
+            }
+	    else {
+		equation.add(input.substring(i,i+1));
+	    }
+	    if (input.length() - 1 == i && BinSearch2.binSearch(numbers,input.substring(i,i+1)) !=  -1) {
+		equation.add(numberString);
+	    }
+        }
+	simplifyCo();
+    }
+    public String toString() {
+	String retString = "";
+	for (int i = 0; i < equation.size(); i++) {
+	    retString = retString + "[" + equation.get(i) + "]";
+	}
+	return retString;
+    }
+    public ArrayList<String> simplifyCo() { 
+	for (int i = 1; i < equation.size(); i++) {
+            if (equation.get(i).equals( "x") || equation.get(i).equals("(")) {
+                if (equation.get(i-1).equals(")") || equation.get(i-1).equals("x")) {
+		    equation.add(i,"*");
+		}
+		else {
+		    try {
+			Double a = Double.parseDouble(equation.get(i-1));
+			equation.add(i,"*");
+		    }
+		    catch (NumberFormatException e) {
+			continue;
+		    }
+		}
+	    }
+	}
+        return equation;
+    }
+
+    
+    // Finds last instance of open parens and first instance of closer parens
+    public ArrayList<String> innerParens() {
+        int openParens = 0;
+        int closedParens = 0;
+        for (int i = 0; i < equation.size(); i++) {
+            if (equation.get(i).equals( "(")) {
+                openParens = i;
+            }
+            if (equation.get(i).equals( ")")) {
+                closedParens = i;
+                break;
+            }
+        }
+        if (closedParens == 0) {
+            return equation;
+        }
+        else {
+	    ArrayList<String> retArray = new ArrayList<String>();
+	    for (int r = openParens + 1; r < closedParens; r++) {
+		retArray.add(equation.get(r));
+	    }
+	    return retArray;
+	}
+    }
+    public static int linSearch ( Comparable[] a, Comparable target ) {
+
+        int tPos = -1;
+        int i = 0;
+
+        while ( i < a.length ) {
+            if ( a.get(i).equals(target) ) {
+                tPos = i;
+                break;
+            }
+            i++;
+        }
+        return tPos;
+    }
+
+    public String simplifyStep(ArrayList<String> step) {
+	int size = step.size();
+	for (int i = 1; i < size; i=i) {
+	    if (step.get(i).equals("^")) {
+		double answer = Math.pow(Double.parseDouble(step.get(i-1)), Double.parseDouble(step.get(i+1)));
+		step.set(i, Double.toString(answer));
+		step.remove(i-1);
+		step.remove(i);
+		size-= 2;
+	    }
+	    else if (step.get(i).equals("*")) {
+		double answer = Double.parseDouble(step.get(i-1)) * Double.parseDouble(step.get(i+1));
+		step.set(i, Double.toString(answer));
+		step.remove(i-1);
+		step.remove(i);
+		size-= 2;
+	    }
+	    else if (step.get(i).equals("/")) {
+		double answer = Double.parseDouble(step.get(i-1)) / Double.parseDouble(step.get(i+1));
+		step.set(i, Double.toString(answer));
+		step.remove(i-1);
+		step.remove(i);
+		size-= 2;
+	    }
+	    else if (step.get(i).equals("+")) {
+		double answer = Double.parseDouble(step.get(i-1)) + Double.parseDouble(step.get(i+1));
+		step.set(i, Double.toString(answer));
+		step.remove(i-1);
+		step.remove(i);
+		size-= 2;
+	    }
+	    else if (step.get(i).equals("-")) {
+                double answer = Double.parseDouble(step.get(i-1)) - Double.parseDouble(step.get(i+1));
+                step.set(i, Double.toString(answer));
+                step.remove(i-1);
+                step.remove(i);
+                size-= 2;
+	    }
+	}
+	return step.get(0);
+    }
+    
+    public ArrayList<String> simplify(double xcor) {
+	for (int i = 0; i < equation.size(); i++) {
+	    if (equation.get(i).equals("x")) {
+		equation.set(i, Double.toString(xcor));
+	    }
+	}
+	while (equation.size() > 1) {
+	    int openParens = 0;
+	    int closedParens = 0;
+	    for (int i = 0; i < equation.size(); i++) {
+		if (equation.get(i).equals( "(")) {
+		    openParens = i;
+		}
+		if (equation.get(i).equals( ")")) {
+		    closedParens = i;
+		    break;
+		}
+	    }
+	    equation.add(openParens, simplifyStep(innerParens()));
+	    for (int i = openParens + 1 ; i <= closedParens + 1; i=i) {
+		equation.remove(i); 
+		closedParens--;
+	    }
+	}
+	return equation;
+    }
+           
+    public static void main( String[] args) {
+        String tester = "x(x-4)^3";
+	GraphingCalculator test = new GraphingCalculator(tester);
+	System.out.println(test);
+	test.simplifyCo();
+	System.out.println(test);
+       	test.simplify(2);
+       	System.out.println(test);
+    }
+}
