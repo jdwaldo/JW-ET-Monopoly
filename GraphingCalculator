@@ -13,7 +13,8 @@ public class GUITester implements ActionListener {
     JButton AsymptotesButton;
     JTextField inputFunctionField;
     String inputEquation;
-    private static final String[] VALID = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", "^", "(", ")", "x", "e", "pi", "sin", "cos", "tan", "cot", "csc", "sec", "log"};
+	private static final String[] VALID = {".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", "^", "(", ")", "x", "e", "pi", "sin", "co\
+	s", "tan", "cot", "csc", "sec", "log"};
 
 	//this method allows John's class easy access to the input equation
     public String getInputEquation() {
