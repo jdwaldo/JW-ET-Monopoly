@@ -115,41 +115,72 @@ public class GUITester implements ActionListener {
 	//System.out.println(inputEquation);
     }
 
- 	//helper method for actionPerformed(), determines if the input is valid                                                        
+//helper method for actionPerformed(), determines if the input is valid
     public boolean isValid(String input) {
-        for(int i = 0; i < input.length(); i++) {
-            if ( linSearch(VALID, input.substring(i, i+1)) == -1 ) {
-	        if (input.substring(i, i+1).equals("s")) {
-                    if (!(input.contains("sin"))) {
-                        return false;
-                    }
-                    else {
-	                i += 2;
-                    }
+	for(int i = 0; i < input.length(); i++) {
+
+	    //this if block is to handle all multi-character math symbols: trig functions, log, pi
+	    if ( linSearch(VALID, input.substring(i, i+1)) == -1 ) {
+
+		//"s" block - handles sin and sec
+		if (input.substring(i, i+1).equals("s")) {
+		    if ( !( (input.substring(i+1, i+2).equals("i") && input.substring(i+2,i+3).equals("n"))
+			    || (input.substring(i+1, i+2).equals("e") && input.substring(i+2, i+3).equals("c"))) ) {
+			return false;
+		    }
+		    else {
+			i += 2;
+		    }
 		}
-                else if (input.substring(i, i+1).equals("c")) {
-                    if (!(input.contains("cos"))) {
-                        return false;
-                    }
-	            else {
-                        i += 2;
-	            }
-                }
-	        else if (input.substring(i, i+1).equals("t")) {
-                    if (!(input.contains("tan"))) {
-                        return false;
-	            }
-                    else {
-                        i += 2;
-                    }
-                }
-                else {
-                    return false;
-	        }
-            }
-        }
-        return true;
+
+		//"c" block - handles cos, csc, and cot
+		else if (input.substring(i, i+1).equals("c")) {
+		    if ( !( (input.substring(i+1, i+2).equals("o") && input.substring(i+2, i+3).equals("s"))
+			    || (input.substring(i+1, i+2).equals("s") && input.substring(i+2, i+3).equals("c")) 
+			    || (input.substring(i+1, i+2).equals("o") && input.substring(i+2, i+3).equals("t")) ) ) {
+			return false;
+		    }
+		    else {
+			i += 2;
+		    }
+		}
+		//"t" block - handles tan
+		else if (input.substring(i, i+1).equals("t")) {
+		    if (!( (input.substring(i+1, i+2).equals("a") && input.substring(i+2, i+3).equals("n")) ) ) {
+			return false;
+		    } 
+		    else {
+			i += 2;
+		    }
+		}
+		//"l" block - handles log
+		else if (input.substring(i, i+1).equals("l")) {
+		    if ( !( (input.substring(i+1, i+2).equals("o") && input.substring(i+2, i+3).equals("g")) )) {
+			return false;
+		    }
+		    else {
+			i += 2;
+		    }
+		}
+		//"p" block - handles pi
+		else if (input.substring(i, i+1).equals("p")) {
+		    if ( !( (input.substring(i+1, i+2).equals("i")) )) {
+			return false;
+		    }
+		    else {
+			i += 1;
+		    }
+		}
+
+		//if the character does not fall under any of the blocks
+		else {
+		    return false;
+		}
+	    }    
+	}
+	return true;
     }
+
 
 
     //linSearch to help the isValid method determine if all characters in the input string are valid  
