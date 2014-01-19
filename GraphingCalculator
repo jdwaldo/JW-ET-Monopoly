@@ -119,8 +119,9 @@ public class GUITester implements ActionListener {
     public boolean isValid(String input) {
 	for(int i = 0; i < input.length(); i++) {
 
-	    //this if block is to handle all multi-character math symbols: trig functions, log, pi
 	    if ( linSearch(VALID, input.substring(i, i+1)) == -1 ) {
+
+		//the following if blocks are meant to handle multicharacter math symbols - trig functions, log and pi 
 
 		//"s" block - handles sin and sec
 		if (input.substring(i, i+1).equals("s")) {
