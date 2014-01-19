@@ -1,4 +1,4 @@
- import java.util.ArrayList;
+import java.util.ArrayList;
 public class GraphingCalculator {
     private ArrayList<String> equation;
     private String[] numbers = {".","0","1","2","3","4","5","6","7","8","9"}; 
