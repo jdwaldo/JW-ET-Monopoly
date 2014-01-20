@@ -182,8 +182,6 @@ public void go() {
  an expression in the form y = f(x) so that its special values may be calculated");
             }
         }
-        //diagnostic                                                                                                     
-        //System.out.println(inputEquation);                                                                             
     }
     
     //helper method for actionPerformed(), determines if the input is valid                                              
