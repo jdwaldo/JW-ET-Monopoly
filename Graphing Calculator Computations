@@ -1,9 +1,11 @@
-import java.util.ArrayList;
+ import java.util.ArrayList;
 public class GraphingCalculator {
     private ArrayList<String> equation;
     private String[] numbers = {".","0","1","2","3","4","5","6","7","8","9"}; 
     private String[] operators = {"+", "-", "*", "/", "^", "sin", "cos", "tan","cot", "csc", "sec", "log", "ln"};
     ArrayList<Double> roots = new ArrayList<Double>();
+    ArrayList<Double> asymptotes = new ArrayList<Double>();
+    ArrayList<Double> important = new ArrayList<Double>();
     public GraphingCalculator() {
         equation = new ArrayList<String>();
     }
@@ -123,9 +125,34 @@ public class GraphingCalculator {
         }
         return tPos;
     }
+    public static int linSearch ( ArrayList<Double> a, Double target ) {
+
+        int tPos = -1;
+        int i = 0;
+
+        while ( i < a.size() ) {
+            if ( a.get(i).equals(target) ) {
+                tPos = i;
+                break;
+            }
+            i++;
+        }
+        return tPos;
+    }
 
     public String simplifyStep(ArrayList<String> step) {
 	int size = step.size();
+	for (int i = 1; i < step.size(); i++) {
+	    try {
+		Double a = Double.parseDouble(step.get(i-1));
+		Double b = Double.parseDouble(step.get(i));
+		step.add(i,"*");
+		i--;
+	    }
+	    catch (NumberFormatException e) {
+		continue;
+	    }
+	}
 	while (size > 1) {
 	    if (linSearch(step, "log") != -1) {
                 int i = linSearch(step, "log");
@@ -223,117 +250,135 @@ public class GraphingCalculator {
                 step.remove(i);
                 size-= 2;
 	    }
-	    else {
-		for (int i = 1; i < step.size(); i++) {
-		    try {
-			Double a = Double.parseDouble(equation.get(i-1));
-			Double b = Double.parseDouble(equation.get(i));
-			equation.add(i,"*");
-		    }
-		    catch (NumberFormatException e) {
-			continue;
-		    }
-		}
-	    }
 	}
 	return step.get(0);
     }
     
     public Double simplify(double xcor) {
-	ArrayList<String> retList= new ArrayList<String>();
-	for (int i = 0; i < equation.size(); i++) {
-	    retList.add(i,equation.get(i));
-	}
-	for (int i = 0; i < equation.size(); i++) {
-	    if (equation.get(i).equals("x")) {
-		equation.set(i, Double.toString(xcor));
-	    }
-	    else if (equation.get(i).equals("e")) {
-		equation.set(i, Double.toString(Math.E));
-	    }
-	    else if (equation.get(i).equals("pi")) {
-		equation.set(i,Double.toString(Math.PI));
-	    }
-	}
-	while (equation.size() > 1) {
-	    int openParens = 0;
-	    int closedParens = 0;
+	    ArrayList<String> retList= new ArrayList<String>();
 	    for (int i = 0; i < equation.size(); i++) {
-		if (equation.get(i).equals( "(")) {
-		    openParens = i;
+		retList.add(i,equation.get(i));
+	    }
+	    for (int i = 0; i < equation.size(); i++) {
+		if (equation.get(i).equals("x")) {
+		    equation.set(i, Double.toString(xcor));
 		}
-		if (equation.get(i).equals( ")")) {
-		    closedParens = i;
-		    break;
+		else if (equation.get(i).equals("e")) {
+		    equation.set(i, Double.toString(Math.E));
+		}
+		else if (equation.get(i).equals("pi")) {
+		    equation.set(i,Double.toString(Math.PI));
 		}
 	    }
-	    equation.add(openParens, simplifyStep(innerParens()));
-	    for (int i = openParens + 1 ; i <= closedParens + 1; i=i) {
-		equation.remove(i); 
-		closedParens--;
+	    while (equation.size() > 1) {
+		int openParens = 0;
+		int closedParens = 0;
+		for (int i = 0; i < equation.size(); i++) {
+		    if (equation.get(i).equals( "(")) {
+			openParens = i;
+		    }
+		    if (equation.get(i).equals( ")")) {
+			closedParens = i;
+			break;
+		    }
+		}
+		equation.add(openParens, simplifyStep(innerParens()));
+		for (int i = openParens + 1 ; i <= closedParens + 1; i=i) {
+		    equation.remove(i); 
+		    closedParens--;
+		}
 	    }
-	}
-	Double retDouble = Double.parseDouble(equation.get(0));
-	equation.remove(0);
-	for (int i = 0; i < retList.size(); i++) {
-	    equation.add(i,retList.get(i));
-	}
-	return retDouble;
+	    Double retDouble = Double.parseDouble(equation.get(0));
+	    equation.remove(0);
+	    for (int i = 0; i < retList.size(); i++) {
+		equation.add(i,retList.get(i));
+	    }
+	    if (retDouble != Double.POSITIVE_INFINITY && retDouble != Double.NEGATIVE_INFINITY) {
+	    return retDouble;
+	    }
+	    else {
+		asymptotes.add(xcor);
+		return retDouble;
+	    }
     }
-    // Given domain [a,b] find all roots within range
-    public void findRoots(double a, double b, double interval) {
+    // Given domain [a,b] find all roots and asympototes within range
+    public void findImportant(double a, double b, double interval) {
 	double sign = Math.signum(simplify(a));
 	double newSign= sign;
+	ArrayList<Integer> parity = new ArrayList<Integer>();
 	while (a < b) {
 	    if (newSign==sign) {
 		a+= interval;
+		if (simplify(a) == 0) {important.add(a);}
 		newSign= Math.signum(simplify(a));
 	    }
 	    else {
 		sign = newSign;
-		if (Math.abs(simplify(a)) > Math.abs(simplify(a-interval))) {
-		    roots.add(a-interval);
-		}
-		else {roots.add(a);}
+		//	if (Math.signum(simplify(a)) == 1 && Math.signum(simplify(a-interval)) == -1) {
+		important.add(a);
+		parity.add(1);
+		    //	}
+		    //	else {
+		    //  roots.add(a);
+		    //   parity.add(1);
 	    }
 	}
-	for (int i = 0; i < roots.size(); i++) {
-	    interval = -.1;
-	    while (simplify(roots.get(i)) > 0.001) {
-		sign = Math.signum(simplify(roots.get(i)));
+	/*	for (int i = 0; i < asymptotes.size(); i++) {
+	    int rootsSize = roots.size();
+	    for (int r = 0; r < rootsSize; r++) {
+		if (Math.abs(roots.get(r)-asymptotes.get(i)) < .1) {
+		    roots.remove(r);
+		}
+	    }
+	} */
+	System.out.println(asymptotes + "asymptotes");
+        System.out.println(roots + "roots");
+	System.out.println(important + "important");
+	int importantSize = important.size();
+	for (int i = 0; i < importantSize; i++) {
+	    double accurate = -interval / 10.;
+	    int counter = 0;
+	    double startValue = 0;
+	    while (counter < 8) {
+		sign = Math.signum(simplify(important.get(i)));
 		newSign = sign;
+		startValue = important.get(i);
 		while (sign == newSign) {
-		    if (newSign==sign) {
-			a+= interval;
-			newSign= Math.signum(simplify(a));
-		    }
-		    else {
-			interval = -1 * interval / 10;
-			sign = newSign;
-			roots.remove(i);
-			roots.add(i,a);
-		    }
+		    startValue += accurate;
+		    newSign= Math.signum(simplify(startValue));
 		}
+		accurate = -1 * accurate / 10;
+		sign = newSign;
+		important.remove(i);
+		important.add(i,startValue);
+		counter++;
 	    }
-	}
-	for (int i = 0; i < roots.size(); i++) {
-	    if ((roots.get(i) % .01) < .0001) {
-		roots.set(i,(double) Math.round(100*roots.get(i))/100);
+	}                           
+	for (int r = 0; r < important.size(); r++) {
+	    if (simplify(important.get(r)) == 0) {roots.add(important.get(r));}
+	    else if (Math.abs(simplify(important.get(r))) > 50) {
+		asymptotes.add((double) Math.round(10000*important.get(r))/10000.);
 	    }
+	    else {roots.add((double) Math.round(10000*important.get(r))/10000.);}
 	}
     }
-	    
+    
     public ArrayList<Double> getRoots() {
 	return roots;
     }
+    public ArrayList<Double> getAsymptotes() {
+	return asymptotes;
+    }
 
     public static void main( String[] args) {
-        String tester = "e^x";
+        String tester = "log(x)/tan(x)";
 	GraphingCalculator test = new GraphingCalculator(tester);
 	System.out.println(test);
-	test.findRoots(-5.0,5.0,.1);
-	System.out.println(test.getRoots());
+	System.out.println(test.simplify(1));
+	test.findImportant(0.,1.2,.1);
+	System.out.println(test.important);
+	System.out.println("Roots at" + test.getRoots());
+	System.out.println("Asymptotes at" + test.getAsymptotes());
 	System.out.println(test);
-	System.out.println(test.simplify(2));
     }
 }
