@@ -24,6 +24,7 @@ public class GUITester implements ActionListener {
     int YMax;
     private static final String[] VALID = {".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", "^\
 ", "(", ")", "x", "e", "pi", "sin", "cos", "tan", "cot", "csc", "sec", "log"};
+    //private static final String[] NUMBERS = {".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", }                  
 
     public String getInputEquation() {
         return inputEquation;
@@ -46,9 +47,9 @@ public class GUITester implements ActionListener {
             //create y-axis                                                                                              
             g.drawLine(350, 0, 350, 700);
 
-//this is where the MAGIC happens                                                                            
+		//this is where the MAGIC happens                                                                            
             //this assumes a square graph, with the origin at the center                                                 
-            if ( !(inputEquation.equals(""))) {
+            if ( !(setXMinField.getText().equals(""))) {
                 GraphingCalculator myGraphingCalculator = new GraphingCalculator(inputEquation);
                 int totalXUnits = Math.abs(XMin) + XMax;
                 for(int p = 1; p < 700; p++) {
@@ -59,8 +60,8 @@ public class GUITester implements ActionListener {
                     g.fillRect(p, finalYPixelVal, 1, 1);
                 }
             }
-            else System.out.println("You have typed invalid characters in, or you have not typed anything at all. Type i\
-n an expression in the form y = f(x) so that its special values may be calculated");
+            //else System.out.println("You have typed invalid characters in, or you have not typed anything at all. Type\
+ in an expression in the form y = f(x) so that its special values may be calculated");                                   
         }
     }
 
@@ -73,8 +74,8 @@ n an expression in the form y = f(x) so that its special values may be calculate
         }
 
     }
-
-public void go() {
+    
+    public void go() {
 
         //instantiate a Frame, some Panels, and some Buttons                                                             
         frame = new JFrame();
@@ -96,7 +97,7 @@ public void go() {
         setYMinField = new JTextField(4);
         setYMaxField = new JTextField(4);
 
-	//lend each button your ear                                                                                      
+//lend each button your ear                                                                                      
         XinterceptButton.addActionListener(this);
         YinterceptButton.addActionListener(this);
         AsymptotesButton.addActionListener(this);
@@ -109,14 +110,14 @@ public void go() {
 
         //set button parameters                                                                                          
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
+        
         //add buttons, labels, and textfields to the panel                                                               
         panel.add(GraphButton);
         panel.add(XinterceptButton);
         panel.add(YinterceptButton);
         panel.add(AsymptotesButton);
 
-	inputPanel.add(inputFunctionLabel);
+        inputPanel.add(inputFunctionLabel);
         inputPanel.add(inputFunctionField);
         inputPanel.add(setXMin);
         inputPanel.add(setXMinField);
@@ -137,7 +138,7 @@ public void go() {
 
     }
 
-    //event handler                                                                                                      
+//event handler                                                                                                      
     public void actionPerformed(ActionEvent Event) {
         if (Event.getSource() == setXMinField) {
             XMin = Integer.parseInt(setXMinField.getText());
@@ -151,16 +152,29 @@ public void go() {
         else if (Event.getSource() == setYMaxField) {
             YMax = Integer.parseInt(setYMaxField.getText());
         }
-	else {
-            if ( isValid(inputFunctionField.getText()) && !(inputFunctionField.getText().equals(""))
-                 && !(setXMinField.getText().equals(""))
-                 && !(setXMaxField.getText().equals(""))
-                 && !(setYMinField.getText().equals(""))
-                 && !(setYMaxField.getText().equals(""))
-                 ) {
+        else if (Event.getSource() == inputFunctionField) {
+            if ( isValid(inputFunctionField.getText()) ) {
+                inputEquation = inputFunctionField.getText();
+            }
+            else {
+                System.out.println("You have typed invalid characters in, or you have not typed anything at all. Type in\
+ an expression in the form y = f(x) so that its special values may be calculated");
+             }
+        }
+        else {
+            if ( isValid(inputFunctionField.getText()) ) {
 
                 if (Event.getSource() == GraphButton) {
-                    graphPanel.repaint();
+                    if ( isValid(setXMinField.getText()) && !(setXMinField.getText().contains("x"))
+                         && isValid(setXMaxField.getText()) && !(setXMaxField.getText().contains("x"))
+                         && isValid(setYMinField.getText()) && !(setYMinField.getText().contains("x"))
+                         && isValid(setYMaxField.getText()) && !(setYMaxField.getText().contains("x"))
+                         ) {
+                        graphPanel.repaint();
+                    }
+                    else {
+                        System.out.println("Please type in values for the viewing window.");
+                    }
                 }
                 else if (Event.getSource() == XinterceptButton) {
                     XinterceptButton.setText("X-intercept calculated");
@@ -171,25 +185,29 @@ public void go() {
                 else if (Event.getSource() == AsymptotesButton) {
                     AsymptotesButton.setText("Asymptotes calculated");
                 }
-                else if (Event.getSource() == inputFunctionField) {
-                    //now stores the value the user types into the text field in inputEquation variable                  
-                    inputEquation = inputFunctionField.getText();
-                }
-            }
 
-	else {
+            }
+            else {
                 System.out.println("You have typed invalid characters in, or you have not typed anything at all. Type in\
  an expression in the form y = f(x) so that its special values may be calculated");
             }
         }
+        //diagnostic                                                                                                     
+        //System.out.println(inputEquation);                                                                             
     }
-    
+
     //helper method for actionPerformed(), determines if the input is valid                                              
     public boolean isValid(String input) {
+
+        if (input.equals("")) {
+            return false;
+        }
+
         for(int i = 0; i < input.length(); i++) {
 
-            //this if block is to handle all multi-character math symbols: trig functions, log, pi                       
             if ( linSearch(VALID, input.substring(i, i+1)) == -1 ) {
+
+                //the following if blocks handle all multi-character math symbols: trig functions, log, pi               
 
                 //"s" block - handles sin and sec                                                                        
                 if (input.substring(i, i+1).equals("s")) {
@@ -216,13 +234,12 @@ public void go() {
                 //"t" block - handles tan                                                                                
                 else if (input.substring(i, i+1).equals("t")) {
                     if (!( (input.substring(i+1, i+2).equals("a") && input.substring(i+2, i+3).equals("n")) ) ) {
-                        return false;
+			return false;
                     }
                     else {
                         i += 2;
                     }
                 }
-
                 //"l" block - handles log, ln                                                                            
                 else if (input.substring(i, i+1).equals("l")) {
                     if ( !( (input.substring(i+1, i+2).equals("o") && input.substring(i+2, i+3).equals("g"))
@@ -256,7 +273,8 @@ public void go() {
         }
         return true;
     }
-    //linSearch to help the isValid method determine if all characters in the input string are valid                     
+
+    //linSearch to help the isValid method determine if all characters in the input string are valid                       
     public static int linSearch ( String[] a, String target ) {
 
         int tPos = -1;
@@ -272,10 +290,12 @@ public void go() {
         return tPos;
     }
 
-    //Main Method                                                                                                        
+    //Main Method                                                                                                          
     public static void main (String[] args) {
         GUITester testarr = new GUITester();
-	testarr.go();
+        testarr.go();
     }
 
 }
+
+ 
