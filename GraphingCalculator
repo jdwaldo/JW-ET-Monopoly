@@ -143,6 +143,7 @@ public class GUITester implements ActionListener {
 
     //event handler
     public void actionPerformed(ActionEvent Event) {
+	GraphingCalculator myGraphingCalculator = new GraphingCalculator(inputFunctionField.getText());
         if (Event.getSource() == setXMinField) {
             XMin = Integer.parseInt(setXMinField.getText());
         }
@@ -184,13 +185,13 @@ public class GUITester implements ActionListener {
                     }
                 }
                 else if (Event.getSource() == XinterceptButton) {
-                    XinterceptButton.setText("X-intercept calculated");
+                    XinterceptButton.setText("X-int: " + myGraphingCalculator.getRoots((double) XMin, (double) XMax));
                 }
                 else if (Event.getSource() == YinterceptButton) {
-                    YinterceptButton.setText("Y-intercept calculated");
+                    YinterceptButton.setText("Y-int: " +  myGraphingCalculator.simplify(0));
                 }
                 else if (Event.getSource() == AsymptotesButton) {
-                    AsymptotesButton.setText("Asymptotes calculated");
+                    AsymptotesButton.setText("Asymptotes: " + myGraphingCalculator.getAsymptotes((double) XMin, (double) XMax));
                 }
 
             }
@@ -204,82 +205,6 @@ public class GUITester implements ActionListener {
 
     //helper method for actionPerformed(), determines if the input is valid
     public boolean isValid(String input) {
-	/*
-        if (input.equals("")) {
-            return false;
-        }
-
-        for(int i = 0; i < input.length(); i++) {
-      
-            if ( linSearch(VALID, input.substring(i, i+1)) == -1 ) {
-
-                //the following if blocks handle all multi-character math symbols: trig functions, log, pi
-
-                //"s" block - handles sin and sec
-                if (input.substring(i, i+1).equals("s")) {
-                    if ( !( (input.substring(i+1, i+2).equals("i") && input.substring(i+2,i+3).equals("n"))
-                            || (input.substring(i+1, i+2).equals("e") && input.substring(i+2, i+3).equals("c"))) ) {
-                        return false;
-                    }
-                    else {
-                        i += 2;
-                    }
-                }
-
-                //"c" block - handles cos, csc, and cot
-                else if (input.substring(i, i+1).equals("c")) {
-                    if ( !( (input.substring(i+1, i+2).equals("o") && input.substring(i+2, i+3).equals("s"))
-                            || (input.substring(i+1, i+2).equals("s") && input.substring(i+2, i+3).equals("c")) 
-                            || (input.substring(i+1, i+2).equals("o") && input.substring(i+2, i+3).equals("t")) ) ) {
-                        return false;
-                    }
-                    else {
-                        i += 2;
-                    }
-                }
-                //"t" block - handles tan
-                else if (input.substring(i, i+1).equals("t")) {
-                    if (!( (input.substring(i+1, i+2).equals("a") && input.substring(i+2, i+3).equals("n")) ) ) {
-                        return false;
-                    } 
-                    else {
-                        i += 2;
-                    }
-                }
-
-                //"l" block - handles log, ln
-                else if (input.substring(i, i+1).equals("l")) {
-                    if ( !( (input.substring(i+1, i+2).equals("o") && input.substring(i+2, i+3).equals("g"))
-                            || (input.substring(i+1, i+2).equals("n")) )) {
-                        return false;
-                    }
-                    else {
-                        if (input.substring(i+1, i+2).equals("o")) {
-                            i += 2;
-                        }
-                        else {
-                            i++;
-                        }
-                    }
-                }
-
-                //"p" block - handles pi
-                else if (input.substring(i, i+1).equals("p")) {
-                    if ( !( (input.substring(i+1, i+2).equals("i")) )) {
-                        return false;
-                    }
-                    else {
-                        i += 1;
-                    }
-                }
-
-                //if the character does not fall under any of the blocks
-                else {
-                    return false;
-                }
-            }    
-        }
-	*/
 	try {
 	    GraphingCalculator myGraphingCalculator = new GraphingCalculator(inputFunctionField.getText());
 	    myGraphingCalculator.simplify(0);
@@ -292,23 +217,6 @@ public class GUITester implements ActionListener {
 	    return false;
 	}
     }
-
-    //linSearch to help the isValid method determine if all characters in the input string are valid  
-    public static int linSearch ( String[] a, String target ) {
-
-        int tPos = -1;
-        int i = 0;
-
-        while ( i < a.length ) {
-            if ( a[i].equals(target) ) {
-                tPos = i;
-                break;
-            }
-            i++;
-        }
-        return tPos;
-    }
-
     //Main Method
     public static void main (String[] args) {
         GUITester testarr = new GUITester();
