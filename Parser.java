@@ -1,16 +1,16 @@
 import java.util.ArrayList;
-public class GraphingCalculator {
+public class Parser {
     private ArrayList<String> equation;
     private String[] numbers = {".","0","1","2","3","4","5","6","7","8","9"}; 
     private String[] operators = {"+", "-", "*", "/", "^", "sin", "cos", "tan","cot", "csc", "sec", "log", "ln"};
     ArrayList<Double> roots = new ArrayList<Double>();
     ArrayList<Double> asymptotes = new ArrayList<Double>();
     ArrayList<Double> important = new ArrayList<Double>();
-    public GraphingCalculator() {
+    public Parser() {
         equation = new ArrayList<String>();
     }
     
-    public GraphingCalculator(String input) {
+    public Parser(String input) {
         String numberString = "";
 	equation= new ArrayList<String>();
         for (int i = 0; i < input.length(); i++) {
@@ -397,7 +397,7 @@ public class GraphingCalculator {
 
     public static void main( String[] args) {
         String tester = "csc(x)log(x)/x";
-	GraphingCalculator test = new GraphingCalculator(tester);
+	Parser test = new Parser(tester);
 	System.out.println(test);
 	System.out.println(test.simplify(1));
 	System.out.println("Roots at" + test.getRoots(-5.,5.));
