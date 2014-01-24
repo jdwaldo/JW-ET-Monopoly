@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.lang.Math.*;
 
-public class GUITester implements ActionListener {
+public class GraphingCalulator implements ActionListener {
 
     JButton GraphButton;
     JButton XinterceptButton;
@@ -223,7 +223,7 @@ public class GUITester implements ActionListener {
     }
     //Main Method
     public static void main (String[] args) {
-        GUITester testarr = new GUITester();
+        GraphingCalculator testarr = new GraphingCalculator();
         testarr.go();
     }
 
