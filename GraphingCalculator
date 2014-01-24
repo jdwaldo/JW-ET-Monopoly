@@ -49,11 +49,11 @@ public class GraphingCalulator implements ActionListener {
             //this is where the MAGIC happens
             //this assumes a square graph, with the origin at the center
             if ( !(inputFunctionField.getText().equals(""))) {
-                GraphingCalculator myGraphingCalculator = new GraphingCalculator(inputEquation);
+                Parser myParser = new Parser(inputEquation);
                 double totalXUnits = Math.abs(XMin) + XMax; 
                 for(int p = 1; p < 700; p++) {
                     double xUnitVal = XMin + (p * totalXUnits / 700.0);
-                    double yUnitVal = myGraphingCalculator.simplify(xUnitVal);
+                    double yUnitVal = myParser.simplify(xUnitVal);
                     int yPixelVal = (int)(yUnitVal * 700.0 / totalXUnits);
                     int finalYPixelVal = 350 - yPixelVal;
                     g.fillRect(p, finalYPixelVal, 1, 1); 
@@ -144,7 +144,7 @@ public class GraphingCalulator implements ActionListener {
 
     //event handler
     public void actionPerformed(ActionEvent Event) {
-        GraphingCalculator myGraphingCalculator = new GraphingCalculator(inputFunctionField.getText());
+        Parser myParser = new Parser(inputFunctionField.getText());
         if (Event.getSource() == setXMinField) {
             XMin = Integer.parseInt(setXMinField.getText());
         }
@@ -189,13 +189,13 @@ public class GraphingCalulator implements ActionListener {
                     }
                 }
                 else if (Event.getSource() == XinterceptButton) {
-                    XinterceptButton.setText("X-int: " + myGraphingCalculator.getRoots((double) XMin, (double) XMax));
+                    XinterceptButton.setText("X-int: " + myParser.getRoots((double) XMin, (double) XMax));
                 }
                 else if (Event.getSource() == YinterceptButton) {
-                    YinterceptButton.setText("Y-int: " +  myGraphingCalculator.simplify(0));
+                    YinterceptButton.setText("Y-int: " +  myParser.simplify(0));
                 }
                 else if (Event.getSource() == AsymptotesButton) {
-                    AsymptotesButton.setText("Asymptotes: " + myGraphingCalculator.getAsymptotes((double) XMin, (double) XMax));
+                    AsymptotesButton.setText("Asymptotes: " + myParser.getAsymptotes((double) XMin, (double) XMax));
                 }
 
             }
@@ -210,8 +210,8 @@ public class GraphingCalulator implements ActionListener {
     //helper method for actionPerformed(), determines if the input is valid
     public boolean isValid(String input) {
         try {
-            GraphingCalculator myGraphingCalculator = new GraphingCalculator(inputFunctionField.getText());
-            myGraphingCalculator.simplify(0);
+            Parser myParser = new Parser(inputFunctionField.getText());
+            myParser.simplify(0);
             return true;
         }
         catch (IndexOutOfBoundsException ie) {
@@ -223,8 +223,8 @@ public class GraphingCalulator implements ActionListener {
     }
     //Main Method
     public static void main (String[] args) {
-        GraphingCalculator testarr = new GraphingCalculator();
-        testarr.go();
+        GraphingCalculator calculatorrr = new GraphingCalculator();
+        calculatorrr.go();
     }
 
 }
