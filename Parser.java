@@ -1,3 +1,8 @@
+// Squad
+// Graphing Calculator Project
+// John Waldo and Emre Tetik
+// Period 09
+// 1/23/14
 import java.util.ArrayList;
 public class Parser {
     private ArrayList<String> equation;
