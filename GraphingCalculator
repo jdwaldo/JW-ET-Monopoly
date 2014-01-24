@@ -18,10 +18,10 @@ public class GUITester implements ActionListener {
     JTextField setYMinField;
     JTextField setYMaxField;
     String inputEquation = "";
-    int XMin = -5;
-    int XMax = 5;
-    int YMin = -5;
-    int YMax = 5;
+    double XMin = -5.0;
+    double XMax = 5.0;
+    double YMin = -5.0;
+    double YMax = 5.0;
     private static final String[] VALID = {".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", "^", "(", ")", "x", "e", "pi", "sin", "cos", "tan", "cot", "csc", "sec", "log"};
     //private static final String[] NUMBERS = {".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", }
 
@@ -50,7 +50,7 @@ public class GUITester implements ActionListener {
             //this assumes a square graph, with the origin at the center
             if ( !(inputFunctionField.getText().equals(""))) {
                 GraphingCalculator myGraphingCalculator = new GraphingCalculator(inputEquation);
-                int totalXUnits = Math.abs(XMin) + XMax; 
+                double totalXUnits = Math.abs(XMin) + XMax; 
                 for(int p = 1; p < 700; p++) {
                     double xUnitVal = XMin + (p * totalXUnits / 700.0);
                     double yUnitVal = myGraphingCalculator.simplify(xUnitVal);
@@ -87,18 +87,18 @@ public class GUITester implements ActionListener {
         JLabel setYMin = new JLabel("Set Ymin=");
         JLabel setYMax = new JLabel("Set Ymax="); 
         inputFunctionField = new JTextField(22);
-        XinterceptButton = new JButton("Calculate x-intercept");
-        YinterceptButton = new JButton("Calculate y-intercept");
+        XinterceptButton = new JButton("Calculate x-intercepts");
+        YinterceptButton = new JButton("Calculate y-intercepts");
         AsymptotesButton = new JButton("Calculate Asymptotes");
         GraphButton = new JButton("Graph");
         setXMinField = new JTextField(4);
-        setXMinField.setText("-5");
+        setXMinField.setText("-5.0");
         setXMaxField = new JTextField(4);
-        setXMaxField.setText("5");
+        setXMaxField.setText("5.0");
         setYMinField = new JTextField(4);
-        setYMinField.setText("-5");
+        setYMinField.setText("-5.0");
         setYMaxField = new JTextField(4);
-        setYMaxField.setText("5");
+        setYMaxField.setText("5.0");
 
         //lend each button your ear
         XinterceptButton.addActionListener(this);
@@ -115,6 +115,7 @@ public class GUITester implements ActionListener {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         //add buttons, labels, and textfields to the panel
+	panel.setPreferredSize(new Dimension(300, 738));
         panel.add(GraphButton);
         panel.add(XinterceptButton);
         panel.add(YinterceptButton);
@@ -136,14 +137,14 @@ public class GUITester implements ActionListener {
         frame.getContentPane().add(BorderLayout.SOUTH, inputPanel);
         frame.getContentPane().add(BorderLayout.CENTER, graphPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(881, 738);
+        frame.setSize(1000, 738);
         frame.setVisible(true);
 
     }
 
     //event handler
     public void actionPerformed(ActionEvent Event) {
-	GraphingCalculator myGraphingCalculator = new GraphingCalculator(inputFunctionField.getText());
+        GraphingCalculator myGraphingCalculator = new GraphingCalculator(inputFunctionField.getText());
         if (Event.getSource() == setXMinField) {
             XMin = Integer.parseInt(setXMinField.getText());
         }
@@ -159,6 +160,9 @@ public class GUITester implements ActionListener {
         else if (Event.getSource() == inputFunctionField) {
             if ( isValid(inputFunctionField.getText()) ) {
                 inputEquation = inputFunctionField.getText();
+		XinterceptButton.setText("Calculate x-intercepts");
+		YinterceptButton.setText("Calculate y-intercepts");
+		AsymptotesButton.setText("Calculate Asymptotes");
             }
             else {
                 System.out.println("You have typed invalid characters in, or you have not typed anything at all. Type in an expression in the form y = f(x) so that its special values may be calculated");
@@ -205,17 +209,17 @@ public class GUITester implements ActionListener {
 
     //helper method for actionPerformed(), determines if the input is valid
     public boolean isValid(String input) {
-	try {
-	    GraphingCalculator myGraphingCalculator = new GraphingCalculator(inputFunctionField.getText());
-	    myGraphingCalculator.simplify(0);
-	    return true;
-	}
-	catch (IndexOutOfBoundsException ie) {
-	    return false;
-	} 
-	catch (NumberFormatException nu) {
-	    return false;
-	}
+        try {
+            GraphingCalculator myGraphingCalculator = new GraphingCalculator(inputFunctionField.getText());
+            myGraphingCalculator.simplify(0);
+            return true;
+        }
+        catch (IndexOutOfBoundsException ie) {
+            return false;
+        } 
+        catch (NumberFormatException nu) {
+            return false;
+        }
     }
     //Main Method
     public static void main (String[] args) {
