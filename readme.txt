@@ -7,4 +7,6 @@ Valid Operators and inputs for graphing calculator: {".", "0", "1", "2", "3", "4
 3. To obtain the x-intercepts, y-intercepts, and asymptotes for this function press the appropriate button. 
 4. To change the dimensions of the viewing screen, change the values in the appropriate boxes at the bottom of the screen and press enter for each change.
 
+Note: In order to obtain an accurate picture of your graph in relation to the x and y axes, you must use a square viewing window with origin at the center.
+
 Enjoy
